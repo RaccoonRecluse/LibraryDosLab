@@ -64,7 +64,7 @@ class SiteController extends Controller
     /**
      * Displays homepage.
      *
-     * @return string
+     * @return string  
      */
     public function actionIndex()
     {
