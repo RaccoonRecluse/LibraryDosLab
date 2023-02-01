@@ -60,7 +60,6 @@ class AddBookForm extends Model
         $book->vendor_code = $this->vendor_code;
         $book->book_condition = $this->book_condition;
         $book->availability = 1;
-        $book->cover = 'cover';
 
         return $book->save() ? $book : null;
     }

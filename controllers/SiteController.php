@@ -73,8 +73,8 @@ class SiteController extends Controller
 
         $issue_id = new Books();
         $return_id = new Books();
-        if ($issue_id->load(Yii::$app->request->post()) && Books::getBookById($issue_id->id)->availability==1) Yii::$app->response->redirect(['site/issuancebook', 'id' => $issue_id->id]);
-        if ($return_id->load(Yii::$app->request->post()) && Books::getBookById($return_id->id)->availability==0) Yii::$app->response->redirect(['site/returnbook', 'id' => $return_id->id]);
+        if ($issue_id->load(Yii::$app->request->post()) && Books::getBookById($issue_id->id)->availability == 1) Yii::$app->response->redirect(['site/issuancebook', 'id' => $issue_id->id]);
+        if ($return_id->load(Yii::$app->request->post()) && Books::getBookById($return_id->id)->availability == 0) Yii::$app->response->redirect(['site/returnbook', 'id' => $return_id->id]);
 
         $model = new SearchBookForm();
         $model->load(Yii::$app->request->post());
@@ -113,39 +113,37 @@ class SiteController extends Controller
     public function actionIssuancebook()
     {
         $book = Books::getBookById(Yii::$app->getRequest()->getQueryParam('id'));
-        $searchClient = new Clients();
-        $searchClient->load(Yii::$app->request->post());
+        $client = new Clients();
+        $search = new Clients();
+
+
         $issueBook = new IssuedBooks();
 
-        if ($issueBook->load(Yii::$app->request->post()) && $issueBook->subject && $book->availability) {
-            $issueBook->object = $book->id;
-            $issueBook->staff_id = Yii::$app->user->id;
-            $issueBook->date_of_issue = date('Y-m-d');
-            $issueBook->save();
-
-            $book->availability = 0;
-            $book->save();
-            return Yii::$app->response->redirect(['site/index', [
-                'model' => new SearchBookForm(),
-                'books' => Books::find()->all(),
-                'issue_id' => new Books(),
-            ]]);
+        if ($issueBook->load(Yii::$app->request->post()) && $client->load(Yii::$app->request->post())  && $client->document_number) {
+            if ($book->availability) {
+                $issueBook->object = $book->id;
+                $issueBook->subject = Clients::getByDocumentNumber($client->document_number)->id;
+                $issueBook->staff_id = Yii::$app->user->id;
+                $issueBook->date_of_issue = date('Y-m-d');
+                $issueBook->save();
+                $book->availability = 0;
+                $book->save();
+                return Yii::$app->response->redirect(['site/index', [
+                    'model' => new SearchBookForm(),
+                    'books' => Books::find()->all(),
+                    'issue_id' => new Books(),
+                ]]);
+            } else Yii::$app->session->setFlash('error', 'Эта книга уже занята.');
         }
 
-        if ($searchClient->document_number) {
-            return $this->render('issuancebook', [
-                'book' => $book,
-                'clients' => Clients::find()->where(['like', 'document_number', $searchClient->document_number])->all(),
-                'searchClient' => $searchClient,
-                'issueBook' => $issueBook,
-            ]);
+        if ($search->load(Yii::$app->request->post()) && $search->document_number) {
+            $client = Clients::getByDocumentNumber($search->document_number);
         }
-
 
         return $this->render('issuancebook', [
             'book' => $book,
-            'clients' => Clients::find()->all(),
-            'searchClient' => $searchClient,
+            'client' => $client,
+            'search' => $search,
             'issueBook' => $issueBook,
         ]);
     }
@@ -250,7 +248,7 @@ class SiteController extends Controller
         $model = new AddBookForm();
 
         if ($model->load(Yii::$app->request->post()) && $model->addBook()) {
-            Yii::$app->session->setFlash('success', 'Вы успешно добавили книгу - \"' . $model->title . '\".');
+            Yii::$app->session->setFlash('success', 'Вы успешно добавили книгу - "' . $model->title . '".');
             $model = new AddBookForm();
         }
 

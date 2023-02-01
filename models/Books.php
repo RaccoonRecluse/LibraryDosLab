@@ -9,7 +9,6 @@ use Yii;
  *
  * @property int $id
  * @property string $title
- * @property string $cover
  * @property int $vendor_code
  * @property string $author
  * @property string $receipt_date
@@ -36,10 +35,10 @@ class Books extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['title', 'cover', 'vendor_code', 'author', 'receipt_date', 'availability', 'book_condition'], 'required'],
+            [['title', 'vendor_code', 'author', 'receipt_date', 'availability', 'book_condition'], 'required'],
             [['vendor_code', 'availability', 'book_condition', 'id'], 'integer'],
             [['receipt_date'], 'safe'],
-            [['title', 'cover', 'author'], 'string', 'max' => 255],
+            [['title', 'author'], 'string', 'max' => 255],
             [['book_condition'], 'exist', 'skipOnError' => true, 'targetClass' => Conditions::class, 'targetAttribute' => ['book_condition' => 'id']],
         ];
     }
@@ -52,7 +51,6 @@ class Books extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'title' => 'Title',
-            'cover' => 'Cover',
             'vendor_code' => 'Vendor Code',
             'author' => 'Author',
             'receipt_date' => 'Receipt Date',

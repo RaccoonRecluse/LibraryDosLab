@@ -42,7 +42,7 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
             !Yii::$app->user->isGuest?['label' => 'Главная', 'url' => ['/site/index']]:'',
             !Yii::$app->user->isGuest?['label' => 'Добавить книгу', 'url' => ['/site/addbook']]:'',
             !Yii::$app->user->isGuest?['label' => 'Добавить клиента', 'url' => ['/site/addclient']]:'',
-            Yii::$app->user->isGuest?'':(Yii::$app->user->identity->login=='staff_admin'?['label' => 'Добавить сотрудника', 'url' => ['/site/addworker']]:''),
+            Yii::$app->user->isGuest?'':(Yii::$app->user->identity->login=='admin'?['label' => 'Добавить сотрудника', 'url' => ['/site/addworker']]:''),
             Yii::$app->user->isGuest
                 ? ['label' => 'Войти', 'url' => ['/site/login']]
                 : '<li class="nav-item">'

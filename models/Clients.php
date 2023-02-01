@@ -67,4 +67,8 @@ class Clients extends \yii\db\ActiveRecord
     {
         return $this->hasMany(ReturnedBooks::class, ['client_id' => 'id']);
     }
+
+    public static function getByDocumentNumber($document_number){
+        return Clients::find()->where(['like', 'document_number', $document_number])->one();
+    }
 }

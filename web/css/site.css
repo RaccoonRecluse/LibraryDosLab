@@ -91,3 +91,9 @@ a.desc:after {
     text-align: center;
 }
 
+.table-client{
+    text-align: left;
+    border: 1px solid rgb(102, 102, 102);
+    
+    border-collapse: collapse;
+}
